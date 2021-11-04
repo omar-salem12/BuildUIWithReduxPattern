@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Udacity Todos Goals </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
+
+
+
 </head>
 <body>
     
@@ -33,49 +37,7 @@
 
        }
      
-       //library Code
-
-       function createStore(reducer) {
-           //The Store should have four parts:
-
-           //1. The State
-           //2.Get the State
-           //3.listen to change on The state
-           //Update the State
-
-          // the state
-           let state;
-
-
-            let listeners = [];
-            //get the state
-           getstate = ()=> state;
-
-           //listen to change on state
-           subscrib = (listener) => {
-               listeners.push(listener);
-               return () =>  { 
-                   listeners.filter(l => l !== listener) 
-               } 
-           }
-
-           //update state
-
-           dispatch = (action) => {
-
-              state = reducer(state,action);
-              listeners.forEach(listener=> listener())
-           }
-
-         return {
-
-             getstate,
-             subscrib,
-             dispatch,
-         }
-       }
-
-
+       
        //App Code
        const ADD_TODO ='ADD_TODO';
        const REMOVE_TODO = 'REMOVE_TODO';
@@ -124,8 +86,8 @@
            }
        }
 
-     //reducers
 
+     //reducers
      function todos(state = [], action) {
          switch(action.type) {
              case ADD_TODO:
@@ -153,20 +115,16 @@
          }
      }
 
-     //combine all reducers
-     function app(state = {}, action) {
-         return {
-             todos: todos(state.todos, action),
-             goals: goals(state.goals,action),
-         }
-     }
+   
 
+     const store = Redux.createStore(Redux.combineReducers({
+         todos,
+         goals
+     }));
 
-     const store = createStore(app);
+     store.subscribe(()=> {
 
-     store.subscrib(()=> {
-
-        const {todos, goals} = store.getstate();
+        const {todos, goals} = store.getState();
 
         document.getElementById('goals').innerHTML = '';
         document.getElementById('todos').innerHTML = '';
